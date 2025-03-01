@@ -1,4 +1,7 @@
 import cv2
+import time
+import RPi.GPIO as GPIO
+from RpiMotorLib import RpiMotorLib
 from pupil_apriltags import Detector
 
 cap = cv2.VideoCapture(0)
@@ -12,6 +15,8 @@ at_detector = Detector(
     decode_sharpening=0.25,
     debug=0
 )
+
+gpio_pins = [21, 22, 23, 24]
 
 while cap.isOpened():
     ret, frame = cap.read()
@@ -28,6 +33,9 @@ while cap.isOpened():
                                     estimate_tag_pose=True, 
                                     camera_params=(fx, fy, cx, cy), 
                                     tag_size=0.05)
+
+    step_motor = RpiMotorLib.BYJMotor("Step Motor", "28BYJ")
+
     for detection in detections:
         print(f"Tag ID: {detection.tag_id}")
         print(f"Center: {detection.center}")
@@ -40,8 +48,7 @@ while cap.isOpened():
         else:
             print("failed to save the image")
 
-    if cv2.waitKey(1) >= 0:
-        break
-        
+        step_motor.motor_run(gpio_pins, .01, 100, False, False, "half", .05)
+
 cap.release()
 cv2.destroyAllWindows()

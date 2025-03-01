@@ -1,7 +1,7 @@
 import cv2
 from pupil_apriltags import Detector
 
-cap = cv2.VideoCapture(0)
+cap = cv2.VideoCapture(2)
 
 at_detector = Detector(
     families="tag36h11",
@@ -35,10 +35,10 @@ while cap.isOpened():
         print(f"Rotation Matrix: {detection.pose_R}")
         print(f"Translation Vector: {detection.pose_t}")
        
-    if cv2.imwrite('tag-detected.png', frame):
-        print("captured image - saved as tag-detected.png")
-    else:
-        print("failed to save the image")
+        if cv2.imwrite('tag-detected.png', frame):
+            print("captured image - saved as tag-detected.png")
+        else:
+            print("failed to save the image")
 
     if cv2.waitKey(1) >= 0:
         break

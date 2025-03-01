@@ -1,7 +1,7 @@
 import cv2
 from pupil_apriltags import Detector
 
-cap = cv2.VideoCapture(2)
+cap = cv2.VideoCapture(0)
 
 at_detector = Detector(
     families="tag36h11",

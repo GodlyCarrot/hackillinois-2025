@@ -1,7 +1,7 @@
 import cv2
 from pupil_apriltags import Detector
 
-cap = cv2.VideoCapture(2)
+cap = cv2.VideoCapture(0)
 
 at_detector = Detector(
     families="tag36h11",
@@ -29,18 +29,17 @@ while cap.isOpened():
                                     camera_params=(fx, fy, cx, cy), 
                                     tag_size=0.05)
     for detection in detections:
-        corners = detection.corners
-        corners = [(int(c[0]), int(c[1])) for c in corners]
-        for i in range(4):
-            cv2.line(frame, corners[i], corners[(i + 1) % 4], (0, 255, 0), 2)
-            
         print(f"Tag ID: {detection.tag_id}")
         print(f"Center: {detection.center}")
 
         print(f"Rotation Matrix: {detection.pose_R}")
         print(f"Translation Vector: {detection.pose_t}")
-        
-    cv2.imshow('video feed', frame)
+       
+    if cv2.imwrite('tag-detected.png', frame):
+        print("captured image - saved as tag-detected.png")
+    else:
+        print("failed to save the image")
+
     if cv2.waitKey(1) >= 0:
         break
         

@@ -16,7 +16,7 @@ at_detector = Detector(
     debug=0
 )
 
-gpio_pins = [21, 22, 23, 24]
+gpio_pins = [18, 23, 24, 25]
 
 while cap.isOpened():
     ret, frame = cap.read()
@@ -36,19 +36,21 @@ while cap.isOpened():
 
     step_motor = RpiMotorLib.BYJMotor("Step Motor", "28BYJ")
 
-    for detection in detections:
-        print(f"Tag ID: {detection.tag_id}")
-        print(f"Center: {detection.center}")
+    if detections:
+        for detection in detections: 
+            print(f"Tag ID: {detection.tag_id}")
+            print(f"Center: {detection.center}")
 
-        print(f"Rotation Matrix: {detection.pose_R}")
-        print(f"Translation Vector: {detection.pose_t}")
+            print(f"Rotation Matrix: {detection.pose_R}")
+            print(f"Translation Vector: {detection.pose_t}")
        
-        if cv2.imwrite('tag-detected.png', frame):
-            print("captured image - saved as tag-detected.png")
-        else:
-            print("failed to save the image")
+            if cv2.imwrite('tag-detected.png', frame):
+                print("captured image - saved as tag-detected.png")
+            else:
+                print("failed to save the image")
 
         step_motor.motor_run(gpio_pins, .01, 100, False, False, "half", .05)
-
+    else:
+        print("No AprilTag detected. Motor stopped")
 cap.release()
 cv2.destroyAllWindows()

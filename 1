@@ -1,6 +1,10 @@
 import RPi.GPIO as GPIO
+
 from RpiMotorLib import RpiMotorLib
 
-GpioPins = [14, 15, 18, 23]
+GpioPins = [18, 23, 24, 25]
+
 mymotortest = RpiMotorLib.BYJMotor("MyMotorOne", "28BYJ")
-mymotortest.motor_run(GpioPins, .01, 17000, True, False, "full", .05)
+
+mymotortest.motor_run(GpioPins, .01, 10, False, False, "full", .2)
+

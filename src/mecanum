@@ -1,0 +1,119 @@
+"""
+
+IDK WHAT THIS CODE IS BUT IT WAS ON TUTORIAL
+
+chassis = mecanum.MecanumChassis()
+
+global start
+start = True
+
+def stop():
+    start = False
+    chassis.setvelocity(0,0,0) #linear velocity, movement direction of car, angular velocity (yaw rate, 0 means no rotation, neg is counter clockwise, pos is clockwise)
+
+def forward():
+    start = True
+    while start:
+        chassis.setvelocity(50,0,0)
+
+def backward():
+    start = True
+    while start:
+        chassis.setvelocity(50,180,0)
+
+def right():
+    start = True
+    while start:
+        chassis.setvelocity(50,90,0)
+
+def left():
+    start = True
+    while start:
+        chassis.setvelocity(50,270,0)
+"""
+
+###Code below is for RPi.GPIO
+
+import RPi.GPIO as GPIO
+import time
+
+pins = {
+    "front_left": {"IN1": 2, "IN2": 3},
+    "front_right": {"IN1": 4, "IN2": 17},
+    "back_left": {"IN1": 27, "IN2": 22},
+    "back_right": {"IN1": 10, "IN2": 9}
+}
+
+GPIO.setmode(GPIO.BCM)
+
+for motor in pins.values():
+    GPIO.setup(motor["IN1"], GPIO.OUT)
+    GPIO.setup(motor["IN2"], GPIO.OUT)
+
+def move_motor(motor, direction):
+    if direction == "forward":
+        GPIO.output(motor["IN1"], GPIO.HIGH)
+        GPIO.output(motor["IN2"], GPIO.LOW)
+    elif direction == "backward":
+        GPIO.output(motor["IN1"], GPIO.LOW)
+        GPIO.output(motor["IN2"], GPIO.HIGH)
+    elif direction == "stop":
+        GPIO.output(motor["IN1"], GPIO.LOW)
+        GPIO.output(motor["IN2"], GPIO.LOW)
+
+# Movement functions
+def forwardmv():
+    move_motor(pins["front_left"], "forward")
+    move_motor(pins["front_right"], "forward")
+    move_motor(pins["back_left"], "forward")
+    move_motor(pins["back_right"], "forward")
+
+def backwardmv():
+    move_motor(pins["front_left"], "backward")
+    move_motor(pins["front_right"], "backward")
+    move_motor(pins["back_left"], "backward")
+    move_motor(pins["back_right"], "backward")
+
+def leftmv():
+    move_motor(pins["front_left"], "backward")
+    move_motor(pins["front_right"], "forward")
+    move_motor(pins["back_left"], "forward")
+    move_motor(ins["back_right"], "backward")
+
+def rightmv():
+    move_motor(pins["front_left"], "forward")
+    move_motor(pins["front_right"], "backward")
+    move_motor(pins["back_left"], "backward")
+    move_motor(pins["back_right"], "forward")
+
+def stop():
+    for motor in pins.values():
+        move_motor(motor, "stop")
+
+"""
+try:
+    print("Moving Forward")
+    forwardmv()
+    time.sleep(2)
+    
+    print("Moving Backward")
+    backwardmv()
+    time.sleep(2)
+    
+    print("Moving Left")
+    leftmv()
+    time.sleep(2)
+    
+    print("Moving Right")
+    rightmv()
+    time.sleep(2)
+    
+    print("Stopping")
+    stop()
+
+except KeyboardInterrupt:
+    print("Stopping due to KeyboardInterrupt")
+
+finally:
+    GPIO.cleanup()
+"""
